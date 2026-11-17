@@ -51,22 +51,21 @@
     --transition-fast: 150ms ease;
     --transition-base: 250ms ease;
 }
-/*  ТЁМНАЯ ТЕМА — переопределяем ТОЛЬКО токены */
-@media (prefers-color-scheme: dark) {
-    :root {
-        --color-bg: #1a1a1a;
-        --color-bg-alt: #242424;
-        --color-text: #f0f0f0;
-        --color-text-muted: #a0a0a0;
-        --color-primary: #63b3ed;
-        --color-primary-hover: #90cdf4;
-        --color-border: #3a3a3a;
-        --color-focus: #f6ad55;
-        --color-error: #fc8181;
-        --color-success: #68d391;
 
-        --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
-        --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.4);
-        --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
-    }
+/*  ПРИНУДИТЕЛЬНАЯ ТЁМНАЯ ТЕМА (по кнопке)  */
+[data-theme="dark"] {
+    --color-bg: #1a1a1a;
+    --color-bg-alt: #242424;
+    --color-text: #f0f0f0;
+    --color-text-muted: #a0a0a0;
+    --color-primary: #63b3ed;
+    --color-primary-hover: #90cdf4;
+    --color-border: #3a3a3a;
+    --color-focus: #f6ad55;
+    --color-error: #fc8181;
+    --color-success: #68d391;
+
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
 }

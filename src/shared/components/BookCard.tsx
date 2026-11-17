@@ -2,8 +2,8 @@
 
 import { Badge } from './Badge';
 import { Button } from './Button';
-import { getCoverUrl } from '../api/books';
-import type { Book } from '../types';
+import { getCoverUrl } from '../../api/books'; // <--- ИСПРАВЛЕННЫЙ ПУТЬ
+import type { Book } from '../../types';       // <--- ИСПРАВЛЕННЫЙ ПУТЬ
 
 interface BookCardProps {
     book: Book;

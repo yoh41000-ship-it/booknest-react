@@ -1,7 +1,7 @@
 // src/components/BookList.tsx
 
 import { BookCard } from './BookCard';
-import type { Book } from '../types';
+import type { Book } from '../../types';
 
 interface BookListProps {
     books: Book[];
