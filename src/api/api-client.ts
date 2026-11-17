@@ -1,5 +1,8 @@
+// src/api/api-client.ts
+
 const BASE_URL = 'https://openlibrary.org';
 
+// Вот этот класс мы случайно удалили!
 export class ApiError extends Error {
     public readonly status: number;
     public readonly fieldErrors?: Record<string, string>;
@@ -27,14 +30,18 @@ export async function apiRequest<T>(
         Object.fromEntries(Object.entries(params).map(([k, v]) => [k, String(v)])),
     ).toString();
 
+    // Отправляем Content-Type только если есть тело запроса (чтобы не ловить CORS на GET)
+    const headers: Record<string, string> = {};
+    if (body) {
+        headers['Content-Type'] = 'application/json';
+    }
+
     let response: Response;
     try {
         response = await fetch(url.toString(), {
             method,
             signal,
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers,
             body: body ? JSON.stringify(body) : undefined,
         });
     } catch (error) {

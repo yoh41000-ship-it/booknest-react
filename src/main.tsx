@@ -9,6 +9,7 @@ import './styles/components.css';
 async function enableMocking() {
     if (import.meta.env.DEV) {
         const { worker } = await import('./mocks/browser');
+        // Вот здесь мы говорим MSW перехватывать всё
         return worker.start({ onUnhandledRequest: 'bypass' });
     }
 }
