@@ -1,5 +1,3 @@
-// src/api/api-client.ts
-
 const BASE_URL = 'https://openlibrary.org';
 
 export class ApiError extends Error {
@@ -34,10 +32,8 @@ export async function apiRequest<T>(
         response = await fetch(url.toString(), {
             method,
             signal,
-            // ЕДИНСТВЕННОЕ место, где задаются заголовки
             headers: {
                 'Content-Type': 'application/json',
-                // Authorization: token ? `Bearer ${token}` : '',  ← сюда в ЛР9
             },
             body: body ? JSON.stringify(body) : undefined,
         });

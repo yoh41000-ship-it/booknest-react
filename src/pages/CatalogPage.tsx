@@ -1,3 +1,4 @@
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { useBooks } from '../features/books/useBooks';
 import { useDebounce } from '../shared/hooks/useDebounce';
@@ -7,7 +8,9 @@ import { Spinner } from '../shared/components/Spinner';
 import { EmptyState } from '../shared/components/EmptyState';
 import { ErrorBox } from '../shared/components/ErrorBox';
 import { Button } from '../shared/components/Button';
-import { useState, useEffect } from 'react';
+import type { Book } from '../types';
+
+const WISHLIST_KEY = 'booknest.wishlist.v3';
 
 export function CatalogPage() {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -17,15 +20,42 @@ export function CatalogPage() {
     const [input, setInput] = useState(search);
     const debounced = useDebounce(input, 350);
 
+    // Состояние для списка желаемого
+    const [wishlist, setWishlist] = useState<Map<string, Book>>(() => {
+        try {
+            const raw = localStorage.getItem(WISHLIST_KEY);
+            return raw ? new Map(JSON.parse(raw)) : new Map();
+        } catch { return new Map(); }
+    });
+
+    // Синхронизация с localStorage
+    useEffect(() => {
+        localStorage.setItem(WISHLIST_KEY, JSON.stringify([...wishlist]));
+    }, [wishlist]);
+
+    // Переключение книги в избранное
+    const handleToggleWishlist = useCallback((book: Book) => {
+        setWishlist((prev) => {
+            const next = new Map(prev);
+            if (next.has(book.key)) {
+                next.delete(book.key);
+            } else {
+                next.set(book.key, book);
+            }
+            return next;
+        });
+    }, []);
+
+    // Множество ключей для быстрой проверки (isWishlisted)
+    const wishlistKeys = useMemo(() => new Set(wishlist.keys()), [wishlist]);
+
     useEffect(() => {
         if (debounced === search) return;
         const next = new URLSearchParams(searchParams);
-        if (debounced) next.set('search', debounced);
-        else next.delete('search');
+        if (debounced) next.set('search', debounced); else next.delete('search');
         next.set('page', '1');
         setSearchParams(next, { replace: true });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [debounced]);
+    }, [debounced, search, searchParams, setSearchParams]);
 
     const { data, loading, error, refetch } = useBooks({ search, genre: '', page });
 
@@ -58,7 +88,11 @@ export function CatalogPage() {
             )}
             {!loading && !error && data && data.items.length > 0 && (
                 <>
-                    <BookList books={data.items} wishlist={new Set()} onToggleWishlist={() => {}} />
+                    <BookList 
+                        books={data.items} 
+                        wishlist={wishlistKeys} 
+                        onToggleWishlist={handleToggleWishlist} 
+                    />
                     <Pagination page={data.page} totalPages={data.totalPages} onPageChange={setPage} />
                 </>
             )}
